@@ -14,7 +14,7 @@ export default function About() {
              {/* Container da Imagem */}
              <div className="absolute inset-0 bg-gray-100 overflow-hidden">
                 <Image
-                  src="/caio-eliziario.png"
+                  src="/images/caio-eliziario.png"
                   alt="Caio Eliziario"
                   fill
                   className="object-cover object-center grayscale hover:grayscale-0 transition-all duration-700"

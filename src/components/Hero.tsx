@@ -7,7 +7,7 @@ export default function Hero() {
       {/* Fundo com Imagem e Gradiente */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Image
-          src="/bg-predios.jpg" // TODO: Adicionar a imagem na pasta public/
+          src="/images/bg-predios.jpg"
           alt="Fundo Corporativo"
           fill
           className="object-cover object-center opacity-60 grayscale"
@@ -66,7 +66,7 @@ export default function Hero() {
               {/* Container da Imagem */}
               <div className="absolute inset-0 bg-primary-light overflow-hidden">
                 <Image
-                  src="/imagem-fundador.png"
+                  src="/images/imagem-fundador.png"
                   alt="Caio Eliziario - Fundador"
                   fill
                   className="object-cover object-center grayscale hover:grayscale-0 transition-all duration-700"

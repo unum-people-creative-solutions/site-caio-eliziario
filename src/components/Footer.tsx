@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import React from 'react';
 
 const socialLinks = [
@@ -31,8 +32,8 @@ export default function Footer() {
               <div 
                 className="bg-secondary h-10 w-48 sm:w-56"
                 style={{
-                  maskImage: 'url(/eliziario-logo.png)',
-                  WebkitMaskImage: 'url(/eliziario-logo.png)',
+                  maskImage: 'url(/images/eliziario-logo.png)',
+                  WebkitMaskImage: 'url(/images/eliziario-logo.png)',
                   maskSize: 'contain',
                   WebkitMaskSize: 'contain',
                   maskRepeat: 'no-repeat',
@@ -80,10 +81,31 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="py-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-center md:text-left">
+        <div className="py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-xs text-center md:text-left font-light" suppressHydrationWarning>
             &copy; {new Date().getFullYear()} Eliziario Advogados. Todos os direitos reservados.
           </p>
+
+          <a 
+            href="https://unumpeople.com.br" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex flex-col md:flex-row items-center gap-2 md:gap-3 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all group"
+          >
+            <span className="text-[10px] uppercase tracking-widest font-bold text-white/40 group-hover:text-secondary transition-colors">Desenvolvido por</span>
+            <div className="flex items-center gap-2">
+              <div className="relative h-5 w-5">
+                <Image
+                  src="/images/logo_unum.png"
+                  alt="Logo Unum People"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <span className="text-xs font-bold text-white/40 group-hover:text-secondary tracking-tight transition-colors">Unum People Creative Solutions</span>
+            </div>
+          </a>
+
           <div className="flex gap-4">
             {socialLinks.map(link => (
               <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-secondary transition-colors" aria-label={link.label}>

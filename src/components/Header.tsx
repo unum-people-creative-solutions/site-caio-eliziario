@@ -15,8 +15,8 @@ export default function Header() {
           <div 
             className="bg-secondary h-10 w-48 sm:w-56 hover:bg-white transition-colors duration-300"
             style={{
-              maskImage: 'url(/eliziario-logo.png)',
-              WebkitMaskImage: 'url(/eliziario-logo.png)',
+              maskImage: 'url(/images/eliziario-logo.png)',
+              WebkitMaskImage: 'url(/images/eliziario-logo.png)',
               maskSize: 'contain',
               WebkitMaskSize: 'contain',
               maskRepeat: 'no-repeat',
