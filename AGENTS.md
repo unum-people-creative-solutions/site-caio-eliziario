@@ -1,18 +1,20 @@
 # Site Caio Eliziário - Guia do Agente
 
-Este arquivo contém as diretrizes fundamentais para o desenvolvimento e manutenção do site institucional do Caio Eliziário.
+Este arquivo orienta a atuação da IA neste repositório.
 
 ## 🎯 Contexto do Projeto
-Site pessoal/profissional baseado em Next.js para apresentação de serviços e portfólio.
+Site institucional para o advogado Caio Eliziário, focado em advocacia corporativa e patrimonial de alto nível.
 
-## 🏗️ Arquitetura e Componentes
-- **Framework**: Next.js (App Router).
-- **Estilização**: Tailwind CSS.
-- **Tipografia**: Geist (padrão Vercel).
+## 🛠️ Metodologia e Regras
+1.  **Metodologia**: Utilize estritamente o `tlc-spec-driven` para qualquer nova funcionalidade ou refatoração. Consulte os specs em `.specs/`.
+2.  **Regras Globais**: Siga rigorosamente o arquivo [../rules.md](../rules.md) para padrões de segurança, tracking e engenharia.
+3.  **Baseline**: Consulte o arquivo [.specs/baseline_site_caio_eliziario_spec.md](.specs/baseline_site_caio_eliziario_spec.md) para entender o estado atual do projeto.
 
-## 🛠️ Padrões de Desenvolvimento & Segurança
-- **Performance**: Priorizar carregamento rápido e otimização de fontes nativas do Next.js.
-- **Responsividade**: Garantir visualização perfeita em dispositivos móveis.
+## 🧰 Skills Recomendadas
+- `tlc-spec-driven`: Gestão de ciclo de vida do desenvolvimento.
+- `codenavi`: Para navegar na estrutura de diretórios do Next.js 15.
+- `react-best-practices`: Para garantir performance em animações e carregamento de fontes.
+- `docs-writer`: Para manter a documentação técnica atualizada.
 
 ## 📝 Comandos Úteis
 - `npm run dev`: Iniciar servidor de desenvolvimento.

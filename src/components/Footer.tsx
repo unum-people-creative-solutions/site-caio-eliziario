@@ -1,6 +1,9 @@
+"use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
+import { useLead } from '@/context/LeadContext';
 
 const socialLinks = [
   {
@@ -21,6 +24,9 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const { openModal } = useLead();
+  const whatsappUrl = "https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico.";
+
   return (
     <footer className="bg-primary text-gray-400">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -68,7 +74,7 @@ export default function Footer() {
               <strong>Endereço:</strong> <a href="https://www.google.com/maps/search/?api=1&query=R.+da+Mooca,+2188+-+Mooca,+S%C3%A3o+Paulo+-+SP,+03104-002" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">R. da Mooca, 2188, 1º andar - Mooca - São Paulo - SP, 03104-002</a>
               </p>
               <p>
-                <strong>WhatsApp:</strong> <a href="https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico." className="hover:text-secondary transition-colors">(11) 97533-5025</a>
+                <strong>WhatsApp:</strong> <button onClick={() => openModal(whatsappUrl)} className="hover:text-secondary transition-colors cursor-pointer">(11) 97533-5025</button>
               </p>
               <p>
               <strong>E-mail:</strong> <a href="mailto:contato@eliziarioadv.com.br?subject=Contato%20via%20Site" className="hover:text-secondary transition-colors">contato@eliziarioadv.com.br</a>
