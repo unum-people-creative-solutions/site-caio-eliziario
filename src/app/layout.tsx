@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/bg-predios.jpg",
+        url: "/images/caio-eliziario.png",
         width: 1200,
         height: 630,
         alt: "Caio Eliziario Advocacia",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Caio Eliziario | Advocacia e Consultoria Jurídica",
     description: "Sólida defesa dos seus interesses corporativos e patrimoniais. Atendimento exclusivo em São Paulo.",
-    images: ["/images/bg-predios.jpg"],
+    images: ["/images/caio-eliziario.png"],
   },
 };
 
