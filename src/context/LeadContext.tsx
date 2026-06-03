@@ -48,14 +48,15 @@ export function LeadProvider({ children }: { children: ReactNode }) {
 
     // Só atualiza se houver algum parâmetro presente
     if (Object.values(newTracking).some(val => val !== null)) {
-      setTracking(newTracking);
+      setTimeout(() => setTracking(newTracking), 0);
       sessionStorage.setItem("unum_tracking", JSON.stringify(newTracking));
     } else {
       // Tenta recuperar do sessionStorage
       const saved = sessionStorage.getItem("unum_tracking");
       if (saved) {
         try {
-          setTracking(JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+          setTimeout(() => setTracking(parsed), 0);
         } catch (e) {
           console.error("Erro ao carregar tracking do sessionStorage", e);
         }

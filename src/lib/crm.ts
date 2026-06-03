@@ -12,7 +12,7 @@ export interface LeadData {
   metadados?: {
     url_conversao: string;
     data_hora: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 

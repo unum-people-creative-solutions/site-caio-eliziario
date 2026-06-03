@@ -11,7 +11,7 @@ import { X, Send, Loader2, User, Mail, Phone, AlertCircle } from "lucide-react";
 
 const leadSchema = z.object({
   nome: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
-  email: z.string().email("E-mail inválido"),
+  email: z.string().email("E-mail inválido").optional().or(z.literal("")),
   telefone: z.string().min(14, "Telefone incompleto"), // (00) 00000-0000
 });
 
@@ -50,20 +50,10 @@ export function LeadModal() {
   const onSubmit = async (data: LeadFormValues) => {
     setIsLoading(true);
 
-    // Lógica de Origem baseada na GENERAL_SPEC.md
-    let origem = "Orgânico";
-    if (tracking.gclid) {
-      origem = "Google Ads";
-    } else if (tracking.utm_source === "facebook" || tracking.utm_source === "instagram" || tracking.fbclid) {
-      origem = "Social Ads";
-    } else if (tracking.utm_source) {
-      origem = tracking.utm_source;
-    }
-
     const leadData: LeadData = {
       ...data,
       ...tracking,
-      origem: origem,
+      origem: "LP Caio Eliziario",
       metadados: {
         url_conversao: whatsappUrl,
         data_hora: new Date().toISOString(),
@@ -80,8 +70,9 @@ export function LeadModal() {
       }
 
       // 2. Registrar conversão no Google Ads
-      if (typeof window !== "undefined" && (window as any).gtag_report_conversion) {
-        (window as any).gtag_report_conversion(null, {
+      const win = window as typeof window & { gtag_report_conversion?: (url: string | null, data: { email?: string; phone: string }) => void };
+      if (typeof window !== "undefined" && win.gtag_report_conversion) {
+        win.gtag_report_conversion(null, {
           email: data.email,
           phone: data.telefone
         });
@@ -126,6 +117,7 @@ export function LeadModal() {
                   {...register("nome")}
                   type="text"
                   placeholder="Seu nome completo"
+                  aria-label="Seu Nome Completo"
                   className={`w-full bg-gray-50 border ${errors.nome ? 'border-red-500' : 'border-gray-200'} rounded-sm py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-secondary transition-colors`}
                 />
               </div>
@@ -153,6 +145,7 @@ export function LeadModal() {
                       unmask={false}
                       onAccept={(value) => field.onChange(value)}
                       placeholder="(00) 00000-0000"
+                      aria-label="Seu Telefone ou WhatsApp"
                       className={`w-full bg-gray-50 border ${errors.telefone ? 'border-red-500' : 'border-gray-200'} rounded-sm py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-secondary transition-colors`}
                     />
                   )}
@@ -175,6 +168,7 @@ export function LeadModal() {
                   {...register("email")}
                   type="email"
                   placeholder="seu@email.com"
+                  aria-label="Seu E-mail"
                   className={`w-full bg-gray-50 border ${errors.email ? 'border-red-500' : 'border-gray-200'} rounded-sm py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-secondary transition-colors`}
                 />
               </div>

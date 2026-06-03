@@ -1,11 +1,97 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { IMaskInput } from "react-imask";
 import { useLead } from '@/context/LeadContext';
+import { sendLeadToCRM, LeadData } from "@/lib/crm";
+import { Loader2, CheckCircle2 } from "lucide-react";
+
+const contactSchema = z.object({
+  nome: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
+  email: z.string().email("E-mail inválido"),
+  telefone: z.string().min(14, "Telefone incompleto"),
+  mensagem: z.string().min(5, "A mensagem deve ter pelo menos 5 caracteres"),
+});
+
+type ContactFormValues = z.infer<typeof contactSchema>;
 
 export default function Contact() {
-  const { openModal } = useLead();
+  const { openModal, tracking } = useLead();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const whatsappUrl = "https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico.";
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      nome: "",
+      email: "",
+      telefone: "",
+      mensagem: "",
+    },
+  });
+
+  const onSubmit = async (data: ContactFormValues) => {
+    setIsLoading(true);
+
+    const leadData: LeadData = {
+      nome: data.nome,
+      email: data.email,
+      telefone: data.telefone,
+      ...tracking,
+      origem: "LP Caio Eliziario - Contato",
+      metadados: {
+        mensagem: data.mensagem,
+        url_conversao: window.location.href,
+        data_hora: new Date().toISOString(),
+        hostname: window.location.hostname,
+      },
+    };
+
+    try {
+      // 1. Enviar para o CRM
+      try {
+        await sendLeadToCRM(leadData);
+      } catch (crmError) {
+        console.error("Erro ao enviar para o CRM:", crmError);
+      }
+
+      // 2. Enviar para o FormSubmit (para o e-mail do cliente)
+      const formSubmitData = new FormData();
+      formSubmitData.append("Nome", data.nome);
+      formSubmitData.append("Email", data.email);
+      formSubmitData.append("Telefone", data.telefone);
+      formSubmitData.append("Mensagem", data.mensagem);
+      formSubmitData.append("_subject", "Novo Contato pelo Site!");
+      formSubmitData.append("_captcha", "false");
+      formSubmitData.append("_template", "table");
+
+      await fetch("https://formsubmit.co/ajax/contato@eliziarioadv.com.br", {
+        method: "POST",
+        body: formSubmitData,
+      });
+
+      setIsSuccess(true);
+      reset();
+      
+      // Limpa a mensagem de sucesso após 5 segundos
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (error) {
+      console.error("Falha ao processar contato:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section id="contato" className="py-24 lg:py-32 bg-primary-light text-white relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
@@ -73,32 +159,87 @@ export default function Contact() {
             
             <h3 className="text-2xl font-light mb-8">Envie uma <span className="font-medium text-secondary">Mensagem</span></h3>
             
-            <form action="https://formsubmit.co/contato@eliziarioadv.com.br" method="POST" className="space-y-6">
-              {/* Configurações do FormSubmit */}
-              <input type="hidden" name="_subject" value="Novo Contato pelo Site!" />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_template" value="table" />
-              {/* TODO: Descomentar e inserir o domínio final do site para redirecionar após envio */}
-              {/* <input type="hidden" name="_next" value="https://eliziarioadv.com.br" /> */}
-              
-              <div>
-                <input type="text" name="Nome" placeholder="Nome Completo" className="w-full bg-transparent border-b border-white/20 text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light" required />
+            {isSuccess ? (
+              <div className="absolute inset-0 z-20 bg-primary flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-300">
+                <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center mb-6">
+                  <CheckCircle2 className="w-10 h-10 text-secondary" />
+                </div>
+                <h4 className="text-3xl font-light mb-4">Mensagem <span className="text-secondary font-medium">Enviada</span></h4>
+                <p className="text-gray-400 font-light leading-relaxed max-w-xs mb-8">
+                  Recebemos sua solicitação com sucesso. Em breve, um de nossos especialistas entrará em contato.
+                </p>
+                <button 
+                  onClick={() => setIsSuccess(false)}
+                  className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-3 text-xs font-bold uppercase tracking-widest transition-all"
+                >
+                  Fechar
+                </button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            ) : (
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                  <input type="email" name="Email" placeholder="E-mail" className="w-full bg-transparent border-b border-white/20 text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light" required />
+                  <input 
+                    {...register("nome")}
+                    type="text" 
+                    placeholder="Nome Completo" 
+                    aria-label="Seu Nome Completo"
+                    className={`w-full bg-transparent border-b ${errors.nome ? 'border-red-500' : 'border-white/20'} text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light`} 
+                  />
+                  {errors.nome && <p className="text-[10px] text-red-500 mt-1">{errors.nome.message}</p>}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <input 
+                      {...register("email")}
+                      type="email" 
+                      placeholder="E-mail" 
+                      aria-label="Seu E-mail"
+                      className={`w-full bg-transparent border-b ${errors.email ? 'border-red-500' : 'border-white/20'} text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light`} 
+                    />
+                    {errors.email && <p className="text-[10px] text-red-500 mt-1">{errors.email.message}</p>}
+                  </div>
+                  <div>
+                    <Controller
+                      name="telefone"
+                      control={control}
+                      render={({ field }) => (
+                        <IMaskInput
+                          mask="(00) 00000-0000"
+                          value={field.value}
+                          unmask={false}
+                          onAccept={(value) => field.onChange(value)}
+                          placeholder="Telefone / WhatsApp"
+                          aria-label="Seu Telefone ou WhatsApp"
+                          className={`w-full bg-transparent border-b ${errors.telefone ? 'border-red-500' : 'border-white/20'} text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light`}
+                        />
+                      )}
+                    />
+                    {errors.telefone && <p className="text-[10px] text-red-500 mt-1">{errors.telefone.message}</p>}
+                  </div>
                 </div>
                 <div>
-                  <input type="tel" name="Telefone" placeholder="Telefone / WhatsApp" className="w-full bg-transparent border-b border-white/20 text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light" />
+                  <textarea 
+                    {...register("mensagem")}
+                    placeholder="Como podemos ajudar?" 
+                    aria-label="Sua Mensagem"
+                    rows={4} 
+                    className={`w-full bg-transparent border-b ${errors.mensagem ? 'border-red-500' : 'border-white/20'} text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light resize-none`}
+                  ></textarea>
+                  {errors.mensagem && <p className="text-[10px] text-red-500 mt-1">{errors.mensagem.message}</p>}
                 </div>
-              </div>
-              <div>
-                <textarea name="Mensagem" placeholder="Como podemos ajudar?" rows={4} className="w-full bg-transparent border-b border-white/20 text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light resize-none" required></textarea>
-              </div>
-              <button type="submit" className="w-full bg-secondary hover:bg-white text-primary font-bold uppercase tracking-widest text-xs py-4 transition-colors duration-300 mt-4">
-                Enviar Solicitação
-              </button>
-            </form>
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="w-full bg-secondary hover:bg-white text-primary font-bold uppercase tracking-widest text-xs py-4 transition-colors duration-300 mt-4 flex items-center justify-center gap-3 disabled:opacity-70"
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Enviar Solicitação"
+                  )}
+                </button>
+              </form>
+            )}
           </div>
 
         </div>

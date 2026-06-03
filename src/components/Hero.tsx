@@ -14,7 +14,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Image
           src="/images/bg-predios.jpg"
-          alt="Fundo Corporativo"
+          alt="Vista aérea de prédios corporativos em São Paulo, representando o foco em advocacia empresarial"
           fill
           className="object-cover object-center opacity-60 grayscale"
           priority
