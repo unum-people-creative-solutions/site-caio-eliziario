@@ -1,7 +1,6 @@
 "use client";
 
 import Link from 'next/link';
-import Image from 'next/image';
 import React from 'react';
 import { useLead } from '@/context/LeadContext';
 
@@ -96,12 +95,10 @@ export default function Footer() {
             href="https://unumpeople.com.br"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col md:flex-row items-center gap-2 md:gap-3 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all group"
+            className="flex items-baseline gap-2 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all group"
           >
             <span className="text-[10px] uppercase tracking-widest font-bold text-white/40 group-hover:text-secondary transition-colors">Desenvolvido por</span>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-white/40 group-hover:text-secondary tracking-tight transition-colors">Unum People Creative Solutions</span>
-            </div>
+            <span className="text-xs font-bold text-white/40 group-hover:text-secondary tracking-tight transition-colors">Unum People Creative Solutions</span>
           </a>
           <div className="flex gap-4">
             {socialLinks.map(link => (
