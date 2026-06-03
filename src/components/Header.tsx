@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useLead } from "@/context/LeadContext";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { openModal } = useLead();
+  const whatsappUrl = "https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico.";
 
   return (
     <header className="sticky top-0 z-50 w-full bg-primary/95 backdrop-blur-md border-b border-white/10 transition-all duration-300">
@@ -38,14 +41,12 @@ export default function Header() {
 
         <div className="flex items-center gap-4">
           {/* CTA (Call to Action) Desktop/Tablet */}
-          <a 
-            href="https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico."
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center justify-center bg-secondary hover:bg-white hover:text-primary text-white px-7 py-3 text-xs font-bold tracking-widest uppercase transition-colors duration-300"
+          <button 
+            onClick={() => openModal(whatsappUrl)}
+            className="hidden sm:inline-flex items-center justify-center bg-secondary hover:bg-white hover:text-primary text-white px-7 py-3 text-xs font-bold tracking-widest uppercase transition-colors duration-300 cursor-pointer"
           >
             Fale Conosco
-          </a>
+          </button>
 
           {/* Menu Hambúrguer (Mobile) */}
           <button
@@ -70,15 +71,15 @@ export default function Header() {
           <Link href="#sobre" onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Sobre</Link>
           <Link href="#contato" onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Contato</Link>
           
-          <a 
-            href="https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico."
-            target="_blank" 
-            rel="noopener noreferrer"
-            onClick={() => setIsMenuOpen(false)}
-            className="sm:hidden inline-flex items-center justify-center bg-secondary text-white px-7 py-4 mt-4 text-xs font-bold tracking-widest uppercase"
+          <button 
+            onClick={() => {
+              setIsMenuOpen(false);
+              openModal(whatsappUrl);
+            }}
+            className="sm:hidden inline-flex items-center justify-center bg-secondary text-white px-7 py-4 mt-4 text-xs font-bold tracking-widest uppercase cursor-pointer"
           >
             Fale Conosco
-          </a>
+          </button>
         </div>
       )}
     </header>

@@ -1,6 +1,97 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { IMaskInput } from "react-imask";
+import { useLead } from '@/context/LeadContext';
+import { sendLeadToCRM, LeadData } from "@/lib/crm";
+import { Loader2, CheckCircle2 } from "lucide-react";
+
+const contactSchema = z.object({
+  nome: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
+  email: z.string().email("E-mail inválido"),
+  telefone: z.string().min(14, "Telefone incompleto"),
+  mensagem: z.string().min(5, "A mensagem deve ter pelo menos 5 caracteres"),
+});
+
+type ContactFormValues = z.infer<typeof contactSchema>;
 
 export default function Contact() {
+  const { openModal, tracking } = useLead();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const whatsappUrl = "https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico.";
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      nome: "",
+      email: "",
+      telefone: "",
+      mensagem: "",
+    },
+  });
+
+  const onSubmit = async (data: ContactFormValues) => {
+    setIsLoading(true);
+
+    const leadData: LeadData = {
+      nome: data.nome,
+      email: data.email,
+      telefone: data.telefone,
+      ...tracking,
+      origem: "LP Caio Eliziario - Contato",
+      metadados: {
+        mensagem: data.mensagem,
+        url_conversao: window.location.href,
+        data_hora: new Date().toISOString(),
+        hostname: window.location.hostname,
+      },
+    };
+
+    try {
+      // 1. Enviar para o CRM
+      try {
+        await sendLeadToCRM(leadData);
+      } catch (crmError) {
+        console.error("Erro ao enviar para o CRM:", crmError);
+      }
+
+      // 2. Enviar para o FormSubmit (para o e-mail do cliente)
+      const formSubmitData = new FormData();
+      formSubmitData.append("Nome", data.nome);
+      formSubmitData.append("Email", data.email);
+      formSubmitData.append("Telefone", data.telefone);
+      formSubmitData.append("Mensagem", data.mensagem);
+      formSubmitData.append("_subject", "Novo Contato pelo Site!");
+      formSubmitData.append("_captcha", "false");
+      formSubmitData.append("_template", "table");
+
+      await fetch("https://formsubmit.co/ajax/contato@eliziarioadv.com.br", {
+        method: "POST",
+        body: formSubmitData,
+      });
+
+      setIsSuccess(true);
+      reset();
+      
+      // Limpa a mensagem de sucesso após 5 segundos
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (error) {
+      console.error("Falha ao processar contato:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section id="contato" className="py-24 lg:py-32 bg-primary-light text-white relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
@@ -25,7 +116,7 @@ export default function Contact() {
 
             <div className="space-y-8 mb-12 w-full">
               {/* WhatsApp */}
-              <a href="https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico." target="_blank" rel="noopener noreferrer" className="flex items-center gap-6 group">
+              <button onClick={() => openModal(whatsappUrl)} className="flex items-center gap-6 group text-left w-full cursor-pointer">
                 <div className="w-12 h-12 rounded-none border border-white/10 bg-primary flex items-center justify-center group-hover:border-secondary transition-colors duration-300">
                   <svg className="w-5 h-5 text-secondary" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                 </div>
@@ -33,7 +124,7 @@ export default function Contact() {
                   <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">WhatsApp</p>
                   <p className="text-lg font-light group-hover:text-secondary transition-colors duration-300">(11) 97533-5025</p>
                 </div>
-              </a>
+              </button>
 
               {/* Email */}
               <a href="mailto:contato@eliziarioadv.com.br" className="flex items-center gap-6 group">
@@ -68,32 +159,87 @@ export default function Contact() {
             
             <h3 className="text-2xl font-light mb-8">Envie uma <span className="font-medium text-secondary">Mensagem</span></h3>
             
-            <form action="https://formsubmit.co/contato@eliziarioadv.com.br" method="POST" className="space-y-6">
-              {/* Configurações do FormSubmit */}
-              <input type="hidden" name="_subject" value="Novo Contato pelo Site!" />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_template" value="table" />
-              {/* TODO: Descomentar e inserir o domínio final do site para redirecionar após envio */}
-              {/* <input type="hidden" name="_next" value="https://eliziarioadv.com.br" /> */}
-              
-              <div>
-                <input type="text" name="Nome" placeholder="Nome Completo" className="w-full bg-transparent border-b border-white/20 text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light" required />
+            {isSuccess ? (
+              <div className="absolute inset-0 z-20 bg-primary flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-300">
+                <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center mb-6">
+                  <CheckCircle2 className="w-10 h-10 text-secondary" />
+                </div>
+                <h4 className="text-3xl font-light mb-4">Mensagem <span className="text-secondary font-medium">Enviada</span></h4>
+                <p className="text-gray-400 font-light leading-relaxed max-w-xs mb-8">
+                  Recebemos sua solicitação com sucesso. Em breve, um de nossos especialistas entrará em contato.
+                </p>
+                <button 
+                  onClick={() => setIsSuccess(false)}
+                  className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-3 text-xs font-bold uppercase tracking-widest transition-all"
+                >
+                  Fechar
+                </button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            ) : (
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                  <input type="email" name="Email" placeholder="E-mail" className="w-full bg-transparent border-b border-white/20 text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light" required />
+                  <input 
+                    {...register("nome")}
+                    type="text" 
+                    placeholder="Nome Completo" 
+                    aria-label="Seu Nome Completo"
+                    className={`w-full bg-transparent border-b ${errors.nome ? 'border-red-500' : 'border-white/20'} text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light`} 
+                  />
+                  {errors.nome && <p className="text-[10px] text-red-500 mt-1">{errors.nome.message}</p>}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <input 
+                      {...register("email")}
+                      type="email" 
+                      placeholder="E-mail" 
+                      aria-label="Seu E-mail"
+                      className={`w-full bg-transparent border-b ${errors.email ? 'border-red-500' : 'border-white/20'} text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light`} 
+                    />
+                    {errors.email && <p className="text-[10px] text-red-500 mt-1">{errors.email.message}</p>}
+                  </div>
+                  <div>
+                    <Controller
+                      name="telefone"
+                      control={control}
+                      render={({ field }) => (
+                        <IMaskInput
+                          mask="(00) 00000-0000"
+                          value={field.value}
+                          unmask={false}
+                          onAccept={(value) => field.onChange(value)}
+                          placeholder="Telefone / WhatsApp"
+                          aria-label="Seu Telefone ou WhatsApp"
+                          className={`w-full bg-transparent border-b ${errors.telefone ? 'border-red-500' : 'border-white/20'} text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light`}
+                        />
+                      )}
+                    />
+                    {errors.telefone && <p className="text-[10px] text-red-500 mt-1">{errors.telefone.message}</p>}
+                  </div>
                 </div>
                 <div>
-                  <input type="tel" name="Telefone" placeholder="Telefone / WhatsApp" className="w-full bg-transparent border-b border-white/20 text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light" />
+                  <textarea 
+                    {...register("mensagem")}
+                    placeholder="Como podemos ajudar?" 
+                    aria-label="Sua Mensagem"
+                    rows={4} 
+                    className={`w-full bg-transparent border-b ${errors.mensagem ? 'border-red-500' : 'border-white/20'} text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light resize-none`}
+                  ></textarea>
+                  {errors.mensagem && <p className="text-[10px] text-red-500 mt-1">{errors.mensagem.message}</p>}
                 </div>
-              </div>
-              <div>
-                <textarea name="Mensagem" placeholder="Como podemos ajudar?" rows={4} className="w-full bg-transparent border-b border-white/20 text-white px-0 py-3 focus:outline-none focus:border-secondary transition-colors placeholder-gray-600 font-light resize-none" required></textarea>
-              </div>
-              <button type="submit" className="w-full bg-secondary hover:bg-white text-primary font-bold uppercase tracking-widest text-xs py-4 transition-colors duration-300 mt-4">
-                Enviar Solicitação
-              </button>
-            </form>
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="w-full bg-secondary hover:bg-white text-primary font-bold uppercase tracking-widest text-xs py-4 transition-colors duration-300 mt-4 flex items-center justify-center gap-3 disabled:opacity-70"
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Enviar Solicitação"
+                  )}
+                </button>
+              </form>
+            )}
           </div>
 
         </div>

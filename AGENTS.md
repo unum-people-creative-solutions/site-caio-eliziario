@@ -1,19 +1,36 @@
-# Site Caio Eliziário - Guia do Agente
+# AGENTS.md - Orientação e Orquestração (TLC 2.0)
 
-Este arquivo contém as diretrizes fundamentais para o desenvolvimento e manutenção do site institucional do Caio Eliziário.
+Este repositório opera sob a metodologia **Elite SaaS** e o ciclo de vida **TLC 2.0**.
 
-## 🎯 Contexto do Projeto
-Site pessoal/profissional baseado em Next.js para apresentação de serviços e portfólio.
+## 🏛️ Máquina de Estados do Ciclo de Vida
+Diretriz absoluta: **NENHUMA LINHA DE CÓDIGO DE PRODUÇÃO OU TESTE DEVE SER ESCRITA ANTES DA FASE 5.**
 
-## 🏗️ Arquitetura e Componentes
-- **Framework**: Next.js (App Router).
-- **Estilização**: Tailwind CSS.
-- **Tipografia**: Geist (padrão Vercel).
+1. **FASE 1: DISCOVERY** - Alinhamento de escopo e restrições.
+2. **FASE 2: ARCHITECTURE** - Mapeamento via `codenavi` e criação do `TDD-*.md`.
+3. **FASE 3: DESIGN & UI** - Definição visual via `frontend-blueprint`.
+4. **FASE 4: SPECIFICATION** - Backlog e Planos de Teste via `tlc-spec-driven`.
+5. **FASE 5: EXECUTION** - Implementação via Pipeline de Personas.
 
-## 🛠️ Padrões de Desenvolvimento & Segurança
-- **Performance**: Priorizar carregamento rápido e otimização de fontes nativas do Next.js.
-- **Responsividade**: Garantir visualização perfeita em dispositivos móveis.
+## 🎭 Pipeline de Execução (Handoff Sequencial)
+A Fase 5 exige a separação rígida de responsabilidades:
 
-## 📝 Comandos Úteis
-- `npm run dev`: Iniciar servidor de desenvolvimento.
-- `npm run build`: Compilar para produção.
+### 1. Agente QA (Analista de Qualidade)
+- **Objetivo**: Criar testes que falham (**RED**) baseados no `TDD-*.md`.
+- **Foco**: Acessibilidade (`getByRole`), Happy Path e Edge Cases.
+- **Handoff**: "Testes escritos e falhando. Handoff para o Agente Executor."
+
+### 2. Agente Executor (Engenheiro de Software)
+- **Objetivo**: Implementar o código mínimo para passar os testes (**GREEN**).
+- **Skills**: `tailwind-expert`, `react-best-practices`, `terraform-expert`, etc.
+- **Handoff**: "Código implementado. Testes passando. Handoff para o Agente Auditor."
+
+### 3. Agente Auditor (Revisor)
+- **Objetivo**: Validar segurança (`security-best-practices`), convenções e cobertura.
+- **Handoff**: "Auditoria concluída. Task marcada como DONE."
+
+## 🛡️ Regras e Harness
+Consulte estritamente o arquivo `.specs/RULES.md` para restrições técnicas e comportamentais inquebráveis.
+
+## 📝 Comandos e Contexto Local
+Law firm. Next.js 15, Tailwind 4.
+

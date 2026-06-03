@@ -1,19 +1,18 @@
+"use client";
+
 import Image from "next/image";
+import { useLead } from "@/context/LeadContext";
 
 export default function Hero() {
+  const { openModal } = useLead();
+  const whatsappUrl = "https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico.";
+
   return (
     <section id="inicio" className="relative overflow-hidden bg-primary pt-32 pb-24 lg:pt-48 lg:pb-32">
       
-      {/* Fundo com Imagem e Gradiente */}
+      {/* Fundo com Gradiente */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <Image
-          src="/images/bg-predios.jpg"
-          alt="Fundo Corporativo"
-          fill
-          className="object-cover object-center opacity-60 grayscale"
-          priority
-        />
-        {/* Sobreposição de Gradiente: Escuro na esquerda (texto) revelando os prédios na direita */}
+        {/* Sobreposição de Gradiente: Escuro na esquerda (texto) */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
         {/* Gradiente inferior para dar acabamento */}
         <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent"></div>
@@ -40,14 +39,12 @@ export default function Hero() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
-              <a 
-                href="https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center bg-secondary hover:bg-white hover:text-primary text-white px-8 py-4 text-sm font-bold tracking-widest uppercase transition-colors duration-300"
+              <button 
+                onClick={() => openModal(whatsappUrl)}
+                className="inline-flex items-center justify-center bg-secondary hover:bg-white hover:text-primary text-white px-8 py-4 text-sm font-bold tracking-widest uppercase transition-colors duration-300 cursor-pointer"
               >
                 Agendar Reunião
-              </a>
+              </button>
               <a 
                 href="#areas" 
                 className="inline-flex items-center justify-center border border-white/20 hover:border-secondary hover:text-secondary text-white px-8 py-4 text-sm font-bold tracking-widest uppercase transition-colors duration-300"

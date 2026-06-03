@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useLead } from '@/context/LeadContext';
 
 const areas = [
   {
@@ -133,6 +134,8 @@ const areas = [
 
 export default function AreasAtuacao() {
   const [selectedArea, setSelectedArea] = useState<typeof areas[0] | null>(null);
+  const { openModal } = useLead();
+  const whatsappUrl = "https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico.";
 
   // Trava o scroll da página enquanto a modal estiver aberta
   useEffect(() => {
@@ -231,9 +234,15 @@ export default function AreasAtuacao() {
                 ))}
               </ul>
               
-              <a href="https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico." target="_blank" rel="noopener noreferrer" className="inline-flex w-full justify-center bg-secondary hover:bg-primary text-white py-4 text-xs font-bold tracking-widest uppercase transition-colors duration-300">
+              <button 
+                onClick={() => {
+                  setSelectedArea(null);
+                  openModal(whatsappUrl);
+                }}
+                className="inline-flex w-full justify-center bg-secondary hover:bg-primary text-white py-4 text-xs font-bold tracking-widest uppercase transition-colors duration-300 cursor-pointer"
+              >
                 Agendar Consulta
-              </a>
+              </button>
             </div>
           </div>
         </div>
