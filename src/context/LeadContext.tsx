@@ -12,18 +12,13 @@ interface TrackingParams {
 }
 
 interface LeadContextType {
-  isOpen: boolean;
   openModal: (whatsappUrl: string) => void;
-  closeModal: () => void;
-  whatsappUrl: string;
   tracking: TrackingParams;
 }
 
 const LeadContext = createContext<LeadContextType | undefined>(undefined);
 
 export function LeadProvider({ children }: { children: ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [whatsappUrl, setWhatsappUrl] = useState("");
   const [tracking, setTracking] = useState<TrackingParams>({
     gclid: null,
     fbclid: null,
@@ -65,17 +60,20 @@ export function LeadProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const openModal = (url: string) => {
-    setWhatsappUrl(url);
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-    setWhatsappUrl("");
+    // Redirecionamento direto para o WhatsApp (Bypass do formulário)
+    if (typeof window !== "undefined") {
+      // Tenta usar a função global de conversão definida no layout.tsx
+      const win = window as typeof window & { gtag_report_conversion?: (url: string | null, data: null) => void };
+      if (win.gtag_report_conversion) {
+        win.gtag_report_conversion(url, null);
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    }
   };
 
   return (
-    <LeadContext.Provider value={{ isOpen, openModal, closeModal, whatsappUrl, tracking }}>
+    <LeadContext.Provider value={{ openModal, tracking }}>
       {children}
     </LeadContext.Provider>
   );
