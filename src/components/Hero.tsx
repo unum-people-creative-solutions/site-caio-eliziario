@@ -10,19 +10,30 @@ export default function Hero() {
   return (
     <section id="inicio" className="relative overflow-hidden bg-primary pt-32 pb-24 lg:pt-48 lg:pb-32">
       
+      {/* Imagem de Fundo */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/images/bg-predios.jpg"
+          alt="Escritório Eliziário Advocacia"
+          fill
+          className="object-cover object-center opacity-40"
+          priority
+        />
+      </div>
+
       {/* Fundo com Gradiente */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="absolute inset-0 z-10 pointer-events-none">
         {/* Sobreposição de Gradiente: Escuro na esquerda (texto) */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
         {/* Gradiente inferior para dar acabamento */}
         <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent"></div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-20">
         <div className="grid lg:grid-cols-12 gap-16 items-center">
           
-          {/* Coluna da Esquerda: Texto Minimalista (Ocupa 7 colunas) */}
-          <div className="lg:col-span-7 flex flex-col items-start">
+          {/* Coluna da Esquerda: Texto Minimalista (Ocupa 10 colunas para melhor equilíbrio sem a foto) */}
+          <div className="lg:col-span-10 flex flex-col items-start">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-[1px] bg-secondary"></div>
               <span className="text-secondary font-medium tracking-[0.2em] uppercase text-xs">
@@ -51,25 +62,6 @@ export default function Hero() {
               >
                 Nossas Áreas
               </a>
-            </div>
-          </div>
-
-          {/* Coluna da Direita: Imagem com Retângulos Sobrepostos */}
-          <div className="lg:col-span-5 relative hidden lg:block">
-            <div className="relative w-full aspect-[3/4] max-w-sm ml-auto">
-              {/* Moldura Deslocada */}
-              <div className="absolute inset-0 translate-x-4 translate-y-4 border border-secondary/30"></div>
-              
-              {/* Container da Imagem */}
-              <div className="absolute inset-0 bg-primary-light overflow-hidden">
-                <Image
-                  src="/images/imagem-fundador.png"
-                  alt="Caio Eliziario - Fundador"
-                  fill
-                  className="object-cover object-center grayscale hover:grayscale-0 transition-all duration-700"
-                  priority
-                />
-              </div>
             </div>
           </div>
 
