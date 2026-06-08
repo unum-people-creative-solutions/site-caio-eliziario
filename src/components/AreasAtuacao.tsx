@@ -23,21 +23,21 @@ const areas = [
     )
   },
   {
-    title: "Direito do Consumidor",
-    description: "Atuação estratégica e contenciosa na defesa do consumidor, incluindo negociações, planos de saúde e problemas aéreos.",
-    modalDescription: "É o conjunto de normas e princípios que trata das relações de consumo, ou seja, a relação entre o consumidor e o fornecedor de produtos ou de serviços.",
+    title: "Direito à Saúde",
+    description: "Proteção do acesso digno e contínuo a tratamentos médicos, hospitalares e terapêuticos, contra negativas e abusividades.",
+    modalDescription: "É a área voltada à proteção do acesso digno, adequado e contínuo a tratamentos médicos, hospitalares e terapêuticos. Envolve a atuação em demandas contra planos de saúde, seguradoras, hospitais e entes públicos, especialmente quando há negativa de cobertura, interrupção de tratamento, descredenciamento indevido ou descumprimento de obrigações assistenciais.",
     details: [
-      "Atuação contenciosa em todas as instâncias judiciais.",
-      "Atuação em procedimentos administrativos (PROCON, Ministério Público e órgãos de defesa do consumidor).",
-      "Atuação estratégica preventiva consultiva (elaboração de políticas visando a redução de contingências).",
-      "Análise e assessoria na assinatura de termos de ajustamento de conduta.",
-      "Demandas por negativa de atendimento de Plano de Saúde (liminares e indenizações).",
-      "Resolução de problemas com voos e bagagens (atrasos, cancelamentos e extravios).",
-      "Demandas por atraso na entrega de imóvel na planta."
+      "Atuação em processos judiciais e administrativos envolvendo planos de saúde.",
+      "Medidas urgentes para autorização de cirurgias, exames, internações e tratamentos.",
+      "Discussões sobre negativas de cobertura, medicamentos, terapias e procedimentos médicos.",
+      "Atuação em casos de descredenciamento de hospitais, clínicas e laboratórios.",
+      "Defesa do paciente em situações de reajustes abusivos, cancelamentos indevidos e exclusões contratuais.",
+      "Análise de contratos, coberturas, carências e obrigações das operadoras de saúde.",
+      "Elaboração de notificações, pareceres e estratégias visando a solução do conflito."
     ],
     icon: (
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
       </svg>
     )
   },
@@ -54,6 +54,25 @@ const areas = [
     icon: (
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      </svg>
+    )
+  },
+  {
+    title: "Direito do Consumidor",
+    description: "Atuação estratégica e contenciosa na defesa do consumidor, incluindo negociações, planos de saúde e problemas aéreos.",
+    modalDescription: "É o conjunto de normas e princípios que trata das relações de consumo, ou seja, a relação entre o consumidor e o fornecedor de produtos ou de serviços.",
+    details: [
+      "Atuação contenciosa em todas as instâncias judiciais.",
+      "Atuação em procedimentos administrativos (PROCON, Ministério Público e órgãos de defesa do consumidor).",
+      "Atuação estratégica preventiva consultiva (elaboração de políticas visando a redução de contingências).",
+      "Análise e assessoria na assinatura de termos de ajustamento de conduta.",
+      "Demandas por negativa de atendimento de Plano de Saúde (liminares e indenizações).",
+      "Resolução de problemas com voos e bagagens (atrasos, cancelamentos e extravios).",
+      "Demandas por atraso na entrega de imóvel na planta."
+    ],
+    icon: (
+      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
       </svg>
     )
   },

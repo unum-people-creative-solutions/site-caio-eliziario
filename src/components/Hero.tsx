@@ -37,7 +37,7 @@ export default function Hero() {
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-[1px] bg-secondary"></div>
               <span className="text-secondary font-medium tracking-[0.2em] uppercase text-xs">
-                Advocacia de Excelência
+                Advocacia Estratégica
               </span>
             </div>
             
@@ -46,7 +46,7 @@ export default function Hero() {
             </h1>
             
             <p className="text-lg text-gray-400 mb-12 max-w-2xl leading-relaxed font-light">
-              Atendimento exclusivo e soluções jurídicas altamente estratégicas para clientes que exigem discrição, agilidade e resultados precisos.
+              Atendimento personalizado para clientes que buscam segurança jurídica, transparência e soluções bem estruturadas.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
