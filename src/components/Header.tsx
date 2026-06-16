@@ -10,7 +10,10 @@ export default function Header({ hasBlog = true }: { hasBlog?: boolean }) {
   const { openModal } = useLead();
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const getHref = (id: string) => isHome ? `#${id}` : `/#${id}`;
+  const getHref = (id: string) => {
+    if (id === "blog" && !isHome) return "/blog";
+    return isHome ? `#${id}` : `/#${id}`;
+  };
   const whatsappUrl = "https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico.";
 
   return (
