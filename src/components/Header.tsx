@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useLead } from "@/context/LeadContext";
 import { usePathname } from "next/navigation";
 
-export default function Header() {
+export default function Header({ hasBlog = true }: { hasBlog?: boolean }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { openModal } = useLead();
   const pathname = usePathname();
@@ -39,7 +39,7 @@ export default function Header() {
         <nav className="hidden md:flex gap-10 text-xs font-medium tracking-[0.15em] uppercase text-white/80">
           <Link href={getHref("inicio")} className="hover:text-secondary hover:text-white transition-colors">Início</Link>
           <Link href={getHref("areas")} className="hover:text-secondary hover:text-white transition-colors">Áreas de Atuação</Link>
-          <Link href={getHref("blog")} className="hover:text-secondary hover:text-white transition-colors">Blog</Link>
+          {hasBlog && <Link href={getHref("blog")} className="hover:text-secondary hover:text-white transition-colors">Blog</Link>}
           <Link href={getHref("sobre")} className="hover:text-secondary hover:text-white transition-colors">Sobre</Link>
           <Link href={getHref("contato")} className="hover:text-secondary hover:text-white transition-colors">Contato</Link>
         </nav>
@@ -73,7 +73,7 @@ export default function Header() {
         <div className="md:hidden bg-primary border-b border-white/10 absolute w-full left-0 top-24 py-6 px-6 flex flex-col gap-6 shadow-2xl">
           <Link href={getHref("inicio")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Início</Link>
           <Link href={getHref("areas")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Áreas de Atuação</Link>
-          <Link href={getHref("blog")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Blog</Link>
+          {hasBlog && <Link href={getHref("blog")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Blog</Link>}
           <Link href={getHref("sobre")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Sobre</Link>
           <Link href={getHref("contato")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Contato</Link>
           
