@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { LeadProvider } from "@/context/LeadContext";
+import { fetchBlogPosts } from "@/lib/blog-api";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,12 +65,14 @@ export const viewport = {
   maximumScale: 5,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+  const posts = await fetchBlogPosts(1);
+  const hasBlog = posts && posts.length > 0;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -181,7 +184,7 @@ export default function RootLayout({
         )}
 
         <LeadProvider>
-          <Header />
+          <Header hasBlog={hasBlog} />
           <main className="flex-grow">{children}</main>
           <Footer />
           <WhatsAppButton />
