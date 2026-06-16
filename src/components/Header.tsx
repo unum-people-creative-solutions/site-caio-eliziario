@@ -3,10 +3,14 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useLead } from "@/context/LeadContext";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { openModal } = useLead();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const getHref = (id: string) => isHome ? `#${id}` : `/#${id}`;
   const whatsappUrl = "https://wa.me/5511975335025?text=Olá,%20gostaria%20de%20solicitar%20um%20atendimento%20jurídico.";
 
   return (
@@ -33,10 +37,11 @@ export default function Header() {
         
         {/* Navegação Desktop */}
         <nav className="hidden md:flex gap-10 text-xs font-medium tracking-[0.15em] uppercase text-white/80">
-          <Link href="#inicio" className="hover:text-secondary hover:text-white transition-colors">Início</Link>
-          <Link href="#areas" className="hover:text-secondary hover:text-white transition-colors">Áreas de Atuação</Link>
-          <Link href="#sobre" className="hover:text-secondary hover:text-white transition-colors">Sobre</Link>
-          <Link href="#contato" className="hover:text-secondary hover:text-white transition-colors">Contato</Link>
+          <Link href={getHref("inicio")} className="hover:text-secondary hover:text-white transition-colors">Início</Link>
+          <Link href={getHref("areas")} className="hover:text-secondary hover:text-white transition-colors">Áreas de Atuação</Link>
+          <Link href={getHref("blog")} className="hover:text-secondary hover:text-white transition-colors">Blog</Link>
+          <Link href={getHref("sobre")} className="hover:text-secondary hover:text-white transition-colors">Sobre</Link>
+          <Link href={getHref("contato")} className="hover:text-secondary hover:text-white transition-colors">Contato</Link>
         </nav>
 
         <div className="flex items-center gap-4">
@@ -66,10 +71,11 @@ export default function Header() {
       {/* Navegação Mobile (Dropdown) */}
       {isMenuOpen && (
         <div className="md:hidden bg-primary border-b border-white/10 absolute w-full left-0 top-24 py-6 px-6 flex flex-col gap-6 shadow-2xl">
-          <Link href="#inicio" onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Início</Link>
-          <Link href="#areas" onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Áreas de Atuação</Link>
-          <Link href="#sobre" onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Sobre</Link>
-          <Link href="#contato" onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Contato</Link>
+          <Link href={getHref("inicio")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Início</Link>
+          <Link href={getHref("areas")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Áreas de Atuação</Link>
+          <Link href={getHref("blog")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Blog</Link>
+          <Link href={getHref("sobre")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Sobre</Link>
+          <Link href={getHref("contato")} onClick={() => setIsMenuOpen(false)} className="text-white/80 hover:text-secondary text-sm font-medium tracking-[0.15em] uppercase transition-colors">Contato</Link>
           
           <button 
             onClick={() => {
