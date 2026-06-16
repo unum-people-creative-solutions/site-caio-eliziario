@@ -69,7 +69,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-XXXXXXXXXXX";
+  const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -121,48 +121,64 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Script
-          strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
-        />
-        <Script
-          id="google-ads-tag"
-          strategy="afterInteractive"
-        >
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag("js", new Date());
-            gtag("config", "${googleAdsId}", {
-              'allow_enhanced_conversions': true
-            });
+        {googleAdsId ? (
+          <>
+            <Script
+              strategy="afterInteractive"
+              src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
+            />
+            <Script
+              id="google-ads-tag"
+              strategy="afterInteractive"
+            >
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag("js", new Date());
+                gtag("config", "${googleAdsId}", {
+                  'allow_enhanced_conversions': true
+                });
 
-            // Função global para reportar conversões de forma padronizada
-            window.gtag_report_conversion = function(url, userData) {
-              const callback = function () {
+                // Função global para reportar conversões de forma padronizada
+                window.gtag_report_conversion = function(url, userData) {
+                  const callback = function () {
+                    if (typeof(url) != 'undefined' && url !== null) {
+                      window.open(url, '_blank', 'noopener,noreferrer');
+                    }
+                  };
+                  
+                  const conversionData = {
+                    'send_to': '${googleAdsId}/CONVERSION_LABEL', // Substituir pela Label real
+                    'event_callback': callback
+                  };
+
+                  // Enhanced Conversions
+                  if (userData) {
+                    gtag('set', 'user_data', {
+                      'email': userData.email,
+                      'phone_number': userData.phone
+                    });
+                  }
+
+                  gtag('event', 'conversion', conversionData);
+                  return false;
+                };
+              `}
+            </Script>
+          </>
+        ) : (
+          <Script id="google-ads-mock" strategy="afterInteractive">
+            {`
+              // Fallback function when Ads are disabled to prevent errors and still open URLs
+              window.gtag_report_conversion = function(url) {
                 if (typeof(url) != 'undefined' && url !== null) {
                   window.open(url, '_blank', 'noopener,noreferrer');
                 }
+                return false;
               };
-              
-              const conversionData = {
-                'send_to': '${googleAdsId}/CONVERSION_LABEL', // Substituir pela Label real
-                'event_callback': callback
-              };
-
-              // Enhanced Conversions
-              if (userData) {
-                gtag('set', 'user_data', {
-                  'email': userData.email,
-                  'phone_number': userData.phone
-                });
-              }
-
-              gtag('event', 'conversion', conversionData);
-              return false;
-            };
-          `}
-        </Script>
+            `}
+          </Script>
+        )}
 
         <LeadProvider>
           <Header />
