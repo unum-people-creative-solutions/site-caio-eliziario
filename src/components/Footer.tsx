@@ -78,9 +78,7 @@ export default function Footer() {
               <p>
               <strong>E-mail:</strong> <a href="mailto:contato@eliziarioadv.com.br?subject=Contato%20via%20Site" className="hover:text-secondary transition-colors">contato@eliziarioadv.com.br</a>
               </p>
-              <p>
-              <strong>OAB/SP:</strong> 398.398
-              </p>
+
             </div>
           </div>
         </div>
